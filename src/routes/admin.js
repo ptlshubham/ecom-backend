@@ -8,8 +8,9 @@ var midway = require('./midway');
 const jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 
+
 router.post("/SaveMainCategory", midway.checkToken, (req, res, next) => {
-    console.log(req.body.name);
+    console.log(req.body);
     db.executeSql("INSERT INTO `category`(`name`,`parent`,`createddate`,`updateddate`,`isactive`)VALUES('" + req.body.name + "'," + req.body.parent + ",CURRENT_TIMESTAMP,CURRENT_TIMESTAMP," + req.body.isactive + ");", function (data, err) {
         if (err) {
             res.json("error");
@@ -203,7 +204,7 @@ router.post('/login', function (req, res, next) {
                 console.log(data1);
                 if (data1.length > 0) {
 
-                    module.exports.user = {
+                    module.exports.user1 = {
                         username: data1[0].email, password: data1[0].password
                     }
                     let token = jwt.sign({ username: data1[0].email, password: data1[0].password },

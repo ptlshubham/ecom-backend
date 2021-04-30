@@ -38,8 +38,8 @@ router.post("/SaveAddress", (req, res, next) => {
 
 });
 router.get("/GetUserAddress/:id", (req, res, next) => {
-    console.log(req.body.id);
-    db.executeSql("select * from useraddress where userid =" + req.body.id, function(data, err) {
+    console.log(req.params.id);
+    db.executeSql("select * from useraddress where userid =" + req.params.id, function(data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
