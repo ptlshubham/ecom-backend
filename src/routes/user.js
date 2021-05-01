@@ -49,9 +49,9 @@ router.post("/RemoveUserAddress", midway.checkToken, (req, res, next) => {
     });
 });
 
-router.post("/UpdateUserAddress", (req, res, next) => {
+router.post("/UpdateUserAddress", midway.checkToken,(req, res, next) => {
     console.log(req.body)
-    db.executeSql("UPDATE `ecommerce`.`useraddress` SET name=" + req.body.name + ",contactnumber=" + req.body.contactnumber +",pincode="+req.body.pincode+",locality='"+req.body.locality+"',address='"+req.body.address+"',city='"+req.body.city+"',landmark='"+req.body.landmark+"',alternativeno="+req.body.alternativeno+",updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function(data, err) {
+    db.executeSql("UPDATE `ecommerce`.`useraddress` SET name='" + req.body.name + "',contactnumber=" + req.body.contactnumber +",pincode="+req.body.pincode+",locality='"+req.body.locality+"',address='"+req.body.address+"',city='"+req.body.city+"',landmark='"+req.body.landmark+"',alternativeno="+req.body.alternativeno+",updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function(data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
