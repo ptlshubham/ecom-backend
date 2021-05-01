@@ -245,6 +245,37 @@ router.post("/SaveAdminRegister", (req, res, next) => {
     });
 });
 
+router.post("/SaveWebBanners", (req, res, next) => {
+    console.log(req.body);
+    db.executeSql("INSERT INTO `webbanners`(`name`,`bannersimage`,`status`)VALUES('" + req.body.name + "','" + req.body.bannersimage + "'," + req.body.status + ");", function (data, err) {
+        if (err) {
+            res.json("error");
+        } else {
+            res.json("success");
+        }
+    });
+});
+
+router.get("/GetWebBanners", (req, res, next) => {
+    db.executeSql("select * from webbanners ", function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
+router.post("/RemoveWebBanners", (req, res, next) => {
+    console.log(req.id)
+    db.executeSql("Delete from webbanners where id=" + req.body.id, function(data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
 router.post("/UploadProductImage", midway.checkToken, (req, res, next) => {
     var imgname = generateUUID();
 
@@ -327,6 +358,44 @@ router.get("/RemoveRecentUoloadImage", midway.checkToken, (req, res, next) => {
         }
     });
 })
+
+router.post("/UploadBannersImage", (req, res, next) => {
+    var imgname = generateUUID();                                                 
+
+    const storage = multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, 'images/banners');
+        },
+        // By default, multer removes file extensions so let's add them back
+        filename: function (req, file, cb) {
+
+            cb(null, imgname + path.extname(file.originalname));
+        }
+    });
+    let upload = multer({ storage: storage }).single('file');
+    upload(req, res, function (err) {
+        console.log("path=", config.url + 'images/banners/' + req.file.filename);
+
+        if (req.fileValidationError) {
+            console.log("err1", req.fileValidationError);
+            return res.json("err1", req.fileValidationError);
+        } else if (!req.file) {
+            console.log('Please select an image to upload');
+            return res.json('Please select an image to upload');
+        } else if (err instanceof multer.MulterError) {
+            console.log("err3");
+            return res.json("err3", err);
+        } else if (err) {
+            console.log("err4");  
+            return res.json("err4", err);
+        }
+        return res.json('/images/banners/' + req.file.filename);
+
+        console.log("You have uploaded this image");
+    });
+});
+
+
 
 function generateUUID() {
     var d = new Date().getTime();
