@@ -37,6 +37,30 @@ router.post("/SaveAddress", (req, res, next) => {
     });
 
 });
+router.post("/RemoveUserAddress", midway.checkToken, (req, res, next) => {
+    console.log("ghjsjgd");
+    console.log(req.body.id);
+    db.executeSql("Delete from useraddress where id=" + req.body.id, function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
+router.post("/UpdateUserAddress", (req, res, next) => {
+    console.log(req.body)
+    db.executeSql("UPDATE `ecommerce`.`useraddress` SET name=" + req.body.name + ",contactnumber=" + req.body.contactnumber +",pincode="+req.body.pincode+",locality='"+req.body.locality+"',address='"+req.body.address+"',city='"+req.body.city+"',landmark='"+req.body.landmark+"',alternativeno="+req.body.alternativeno+",updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function(data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
+
 router.get("/GetUserAddress/:id", (req, res, next) => {
     console.log(req.params.id);
     db.executeSql("select * from useraddress where userid =" + req.params.id, function(data, err) {
