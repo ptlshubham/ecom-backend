@@ -28,7 +28,7 @@ router.post("/SaveUserRegister",midway.checkToken, (req, res, next) => {
 router.post("/SaveAddress", (req, res, next) => {
  
     console.log(req.body);
-    db.executeSql("INSERT INTO `useraddress`(`userid`,`name`,`contactnumber`,`pincode`,`locality`,`address`,`city`,`state`,`landmark`,`alternativeno`,`createddate`)VALUES(" + req.body.userid + ",'" + req.body.name + "'," + req.body.contactnumber + "," + req.body.pincode + ",'" + req.body.locality + "','" + req.body.address + "','" + req.body.city + "','" + req.body.state + "','" + req.body.landmark + "'," + req.body.alternativeno + ",CURRENT_TIMESTAMP);", function(data, err) {
+    db.executeSql("INSERT INTO `useraddress`(`userid`,`name`,`contactnumber`,`pincode`,`locality`,`address`,`city`,`state`,`landmark`,`alternativeno`,`createddate`)VALUES(" + req.body.userid + ",'" + req.body.name + "'," + req.body.contactnumber + "," + req.body.pincode + ",'" + req.body.locality + "','" + req.body.address + "','"+req.body.city+"','" + req.body.state + "','" + req.body.landmark + "'," + req.body.alternativeno + ",CURRENT_TIMESTAMP);", function(data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
