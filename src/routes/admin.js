@@ -255,8 +255,61 @@ router.post("/SaveWebBanners", (req, res, next) => {
         }
     });
 });
+router.post("/UpdateActiveWebBanners", midway.checkToken, (req, res, next) => {
+    console.log(req.body)
+    db.executeSql("UPDATE `ecommerce`.`webbanners` SET status=" + req.body.status + " WHERE id=" + req.body.id + ";", function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+router.post("/SaveMobileBanners",midway.checkToken, (req, res, next) => {
+    console.log(req.body);
+    
+    db.executeSql("INSERT INTO `mobilebanners`(`name`,`bannersimage`,`status`)VALUES('" + req.body.name + "','" + req.body.bannersimage + "'," + req.body.status + ");", function (data, err) {
+        if (err) {
+            console.log(err) ;
+            res.json("error");
+        } else {
+            res.json("success");
+        }
+    });
+});
+router.post("/UpdateActiveMobileBanners", midway.checkToken, (req, res, next) => {
+    console.log(req.body)
+    db.executeSql("UPDATE `ecommerce`.`mobilebanners` SET status=" + req.body.status + " WHERE id=" + req.body.id + ";", function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
 
-router.get("/GetWebBanners", (req, res, next) => {
+router.get("/GetMobileBanners", (req, res, next) => {
+    db.executeSql("select * from mobilebanners ", function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
+router.post("/RemoveMobileBanners",midway.checkToken, (req, res, next) => {
+    console.log(req.body.id)
+    db.executeSql("Delete from mobilebanners where id=" + req.body.id, function(data, err) {
+        if (err) {        
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
+router.get("/GetWebBanners",midway.checkToken, (req, res, next) => {
     db.executeSql("select * from webbanners ", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -266,7 +319,7 @@ router.get("/GetWebBanners", (req, res, next) => {
     });
 });
 
-router.post("/RemoveWebBanners", (req, res, next) => {
+router.post("/RemoveWebBanners",midway.checkToken, (req, res, next) => {
     console.log(req.id)
     db.executeSql("Delete from webbanners where id=" + req.body.id, function(data, err) {
         if (err) {
@@ -390,6 +443,41 @@ router.post("/UploadBannersImage", (req, res, next) => {
             return res.json("err4", err);
         }
         return res.json('/images/banners/' + req.file.filename);
+
+        console.log("You have uploaded this image");
+    });
+});
+router.post("/UploadMobileBannersImage", (req, res, next) => {
+    var imgname = generateUUID();                                                 
+
+    const storage = multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, 'images/mobilebanners');
+        },
+        // By default, multer removes file extensions so let's add them back
+        filename: function (req, file, cb) {
+
+            cb(null, imgname + path.extname(file.originalname));
+        }
+    });
+    let upload = multer({ storage: storage }).single('file');
+    upload(req, res, function (err) {
+        console.log("path=", config.url + 'images/mobilebanners/' + req.file.filename);
+
+        if (req.fileValidationError) {
+            console.log("err1", req.fileValidationError);
+            return res.json("err1", req.fileValidationError);
+        } else if (!req.file) {
+            console.log('Please select an image to upload');
+            return res.json('Please select an image to upload');
+        } else if (err instanceof multer.MulterError) {
+            console.log("err3");
+            return res.json("err3", err);
+        } else if (err) {
+            console.log("err4");  
+            return res.json("err4", err);
+        }
+        return res.json('/images/mobilebanners/' + req.file.filename);
 
         console.log("You have uploaded this image");
     });
