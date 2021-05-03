@@ -276,7 +276,15 @@ router.get("/RemoveMainCategory/:id", (req, res, next) => {
         }
     });
 });
-
+router.get("/GetWebBanner", (req, res, next) => {
+    db.executeSql("select * from webbanners ", function(data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
 
 router.post("/SaveAddProducts", (req, res, next) => {
     console.log(req.body);
