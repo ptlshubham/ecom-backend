@@ -87,6 +87,7 @@ router.post("/UpdateMainCategory", midway.checkToken, (req, res, next) => {
     });
 });
 router.post("/UpdateCategory", midway.checkToken, (req, res, next) => {
+    console.log(req.body);
     db.executeSql("UPDATE `ecommerce`.`category` SET parent=" + req.body.parent + ",name='" + req.body.name + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -481,6 +482,24 @@ router.post("/UploadMobileBannersImage", (req, res, next) => {
 
         console.log("You have uploaded this image");
     });
+});
+
+router.post("/saveEmioption",midway.checkToken, (req, res, next) => {
+    console.log(req.body);
+    for(let i=0;i<req.body.length;i++){
+        db.executeSql("INSERT INTO `ecommerce`.`emi`(`bankid`,`months`,`intrest`,`isactive`,`createddate`,`updateddate`)VALUES(" + req.body[i].bankid + "," + req.body[i].months + "," + req.body[i].intrest + ",true,CURRENT_TIMESTAMP,NULL);", function (data, err) {
+            if (err) {
+                console.log(err);
+               
+            } else {
+                
+            }
+        });
+    }
+   
+    res.json("success");
+       
+  
 });
 
 
