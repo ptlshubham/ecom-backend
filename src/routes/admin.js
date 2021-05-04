@@ -59,6 +59,27 @@ router.get("/GetBankList", (req, res, next) => {
     });
 });
 
+router.get("/GetROIList", midway.checkToken, (req, res, next) => {
+    db.executeSql("select e.id,e.bankid,e.months,e.intrest,b.id as BankId,b.bankname from emi e join banklist b on e.bankid=b.id", function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
+router.post("/RemoveROIList", midway.checkToken, (req, res, next) => {
+
+    console.log(req.params.id);
+    db.executeSql("Delete from emi where id=" + req.params.id, function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+})
 router.get("/GetCustomerList", (req, res, next) => {
     db.executeSql("select * from user ", function (data, err) {
         if (err) {
@@ -266,12 +287,12 @@ router.post("/UpdateActiveWebBanners", midway.checkToken, (req, res, next) => {
         }
     });
 });
-router.post("/SaveMobileBanners",midway.checkToken, (req, res, next) => {
+router.post("/SaveMobileBanners", midway.checkToken, (req, res, next) => {
     console.log(req.body);
-    
+
     db.executeSql("INSERT INTO `mobilebanners`(`name`,`bannersimage`,`status`)VALUES('" + req.body.name + "','" + req.body.bannersimage + "'," + req.body.status + ");", function (data, err) {
         if (err) {
-            console.log(err) ;
+            console.log(err);
             res.json("error");
         } else {
             res.json("success");
@@ -299,10 +320,10 @@ router.get("/GetMobileBanners", (req, res, next) => {
     });
 });
 
-router.post("/RemoveMobileBanners",midway.checkToken, (req, res, next) => {
+router.post("/RemoveMobileBanners", midway.checkToken, (req, res, next) => {
     console.log(req.body.id)
-    db.executeSql("Delete from mobilebanners where id=" + req.body.id, function(data, err) {
-        if (err) {        
+    db.executeSql("Delete from mobilebanners where id=" + req.body.id, function (data, err) {
+        if (err) {
             console.log("Error in store.js", err);
         } else {
             return res.json(data);
@@ -310,7 +331,7 @@ router.post("/RemoveMobileBanners",midway.checkToken, (req, res, next) => {
     });
 });
 
-router.get("/GetWebBanners",midway.checkToken, (req, res, next) => {
+router.get("/GetWebBanners", midway.checkToken, (req, res, next) => {
     db.executeSql("select * from webbanners ", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -320,9 +341,9 @@ router.get("/GetWebBanners",midway.checkToken, (req, res, next) => {
     });
 });
 
-router.post("/RemoveWebBanners",midway.checkToken, (req, res, next) => {
+router.post("/RemoveWebBanners", midway.checkToken, (req, res, next) => {
     console.log(req.id)
-    db.executeSql("Delete from webbanners where id=" + req.body.id, function(data, err) {
+    db.executeSql("Delete from webbanners where id=" + req.body.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -414,7 +435,7 @@ router.get("/RemoveRecentUoloadImage", midway.checkToken, (req, res, next) => {
 })
 
 router.post("/UploadBannersImage", (req, res, next) => {
-    var imgname = generateUUID();                                                 
+    var imgname = generateUUID();
 
     const storage = multer.diskStorage({
         destination: function (req, file, cb) {
@@ -440,7 +461,7 @@ router.post("/UploadBannersImage", (req, res, next) => {
             console.log("err3");
             return res.json("err3", err);
         } else if (err) {
-            console.log("err4");  
+            console.log("err4");
             return res.json("err4", err);
         }
         return res.json('/images/banners/' + req.file.filename);
@@ -449,7 +470,7 @@ router.post("/UploadBannersImage", (req, res, next) => {
     });
 });
 router.post("/UploadMobileBannersImage", (req, res, next) => {
-    var imgname = generateUUID();                                                 
+    var imgname = generateUUID();
 
     const storage = multer.diskStorage({
         destination: function (req, file, cb) {
@@ -475,7 +496,7 @@ router.post("/UploadMobileBannersImage", (req, res, next) => {
             console.log("err3");
             return res.json("err3", err);
         } else if (err) {
-            console.log("err4");  
+            console.log("err4");
             return res.json("err4", err);
         }
         return res.json('/images/mobilebanners/' + req.file.filename);
@@ -484,22 +505,22 @@ router.post("/UploadMobileBannersImage", (req, res, next) => {
     });
 });
 
-router.post("/saveEmioption",midway.checkToken, (req, res, next) => {
+router.post("/saveEmioption", midway.checkToken, (req, res, next) => {
     console.log(req.body);
-    for(let i=0;i<req.body.length;i++){
+    for (let i = 0; i < req.body.length; i++) {
         db.executeSql("INSERT INTO `ecommerce`.`emi`(`bankid`,`months`,`intrest`,`isactive`,`createddate`,`updateddate`)VALUES(" + req.body[i].bankid + "," + req.body[i].months + "," + req.body[i].intrest + ",true,CURRENT_TIMESTAMP,NULL);", function (data, err) {
             if (err) {
                 console.log(err);
-               
+
             } else {
-                
+
             }
         });
     }
-   
+
     res.json("success");
-       
-  
+
+
 });
 
 
