@@ -75,7 +75,7 @@ router.get("/GetUserAddress/:id", (req, res, next) => {
 router.post("/saveAddToCart",midway.checkToken, (req, res, next) => {
 
     console.log(req.body);
-    db.executeSql("INSERT INTO `cartlist`(`userid`,`productid`,`createddate`)VALUES(" + req.body.userid + "," + req.body.productid + ",CURRENT_TIMESTAMP);", function(data, err) {
+    db.executeSql("INSERT INTO `cartlist`(`userid`,`productid`,`quantity`,`createddate`)VALUES(" + req.body.userid + "," + req.body.productid + ","+req.body.quantity+",CURRENT_TIMESTAMP);", function(data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
