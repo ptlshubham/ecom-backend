@@ -71,8 +71,8 @@ router.get("/GetROIList", midway.checkToken, (req, res, next) => {
 
 router.post("/RemoveROIList", midway.checkToken, (req, res, next) => {
 
-    console.log(req.params.id);
-    db.executeSql("Delete from emi where id=" + req.params.id, function (data, err) {
+    console.log(req.body.id);
+    db.executeSql("Delete from emi where id=" + req.body.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
