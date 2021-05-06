@@ -61,7 +61,7 @@ router.get("/GetBankList", (req, res, next) => {
 
 router.get("/GetROIList", midway.checkToken, (req, res, next) => {
     db.executeSql("select e.id,e.bankid,e.months,e.intrest,b.id as BankId,b.bankname from emi e join banklist b on e.bankid=b.id", function (data, err) {
-        if (err) {
+         if (err) {
             console.log("Error in store.js", err);
         } else {
             return res.json(data);

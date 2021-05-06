@@ -96,6 +96,17 @@ router.post("/saveToWishList",midway.checkToken, (req, res, next) => {
     });
 
 });
+router.post("/saveUserOrders",midway.checkToken, (req, res, next) => {
+    console.log(req.body)
+    db.executeSql("INSERT INTO `orders`(`username`,`userid`,`adressid`,`productid`,`transactionid`,`parentid`,`modeofpayment`,`orderdate`,`deliverydate`,`creadteddate`,`updateddate`)VALUES('" + req.body.username + "'," + req.body.userid + "," + req.body.addressid + "," + req.body.productid +",null," + req.body.parentid +",null,CURRENT_TIMESTAMP,null,CURRENT_TIMESTAMP);", function(data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+
+});
 router.get("/GetProductList", (req, res, next) => {
     db.executeSql("select * from product ", function(data, err) {
         if (err) {
