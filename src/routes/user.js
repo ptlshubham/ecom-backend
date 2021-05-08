@@ -288,7 +288,7 @@ router.get("/RemoveMainCategory/:id", (req, res, next) => {
     });
 });
 router.get("/GetWebBanner", (req, res, next) => {
-    db.executeSql("select * from webbanners ", function(data, err) {
+    db.executeSql("select * from webbanners where status=0", function(data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
