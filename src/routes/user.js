@@ -98,13 +98,50 @@ router.post("/saveToWishList",midway.checkToken, (req, res, next) => {
 });
 router.post("/saveUserOrders",midway.checkToken, (req, res, next) => {
     console.log(req.body)
-    db.executeSql("INSERT INTO `orders`(`username`,`userid`,`adressid`,`productid`,`transactionid`,`parentid`,`modeofpayment`,`orderdate`,`deliverydate`,`creadteddate`,`updateddate`)VALUES('" + req.body.username + "'," + req.body.userid + "," + req.body.addressid + "," + req.body.productid +",null," + req.body.parentid +",null,CURRENT_TIMESTAMP,null,CURRENT_TIMESTAMP);", function(data, err) {
-        if (err) {
-            console.log("Error in store.js", err);
-        } else {
-            return res.json(data);
-        }
-    });
+    if(req.body.productid.length ==1){
+        console.log("here");
+        req.body.parentid =0;
+        db.executeSql("INSERT INTO `orders`(`username`, `userid`, `addressid`, `productid`, `transactionid`, `parentid`, `modofpayment`, `orderdate`, `deliverydate`, `createddate`, `updateddate`)VALUES('" + req.body.username + "'," + req.body.userid + "," + req.body.addressid + "," + req.body.productid[0].id +",null," + req.body.parentid +",null,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);", function(data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+                return res.json(data);
+            }
+        });
+    }
+    else{
+        req.body.parentid =0;
+        db.executeSql("INSERT INTO `orders`(`username`, `userid`, `addressid`, `productid`, `transactionid`, `parentid`, `modofpayment`, `orderdate`, `deliverydate`, `createddate`, `updateddate`)VALUES('" + req.body.username + "'," + req.body.userid + "," + req.body.addressid + "," + req.body.productid[0].id +",null," + req.body.parentid +",null,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);", function(data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+                db.executeSql("SELECT id FROM orders ORDER BY createddate DESC LIMIT 1", function(data1, err) {
+                    if (err) {
+                        console.log("Error in store.js", err);
+                    } else 
+                    {
+                        req.body.parentid =data1[0].id;
+                        for(let i=1;i<req.body.productid.length;i++){
+                            db.executeSql("INSERT INTO `orders`(`username`, `userid`, `addressid`, `productid`, `transactionid`, `parentid`, `modofpayment`, `orderdate`, `deliverydate`, `createddate`, `updateddate`)VALUES('" + req.body.username + "'," + req.body.userid + "," + req.body.addressid + "," + req.body.productid[i].id +",null," + req.body.parentid +",null,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);", function(data, err) {
+                                if (err) {
+                                    console.log("Error in store.js", err);
+                                } 
+                                else  
+                                {   
+                                    
+                                }
+                            })
+
+                        }
+                       
+    
+                    }
+                });
+                return res.json(data);
+            }
+        });
+    }
+   
 
 });
 router.get("/GetProductList", (req, res, next) => {
