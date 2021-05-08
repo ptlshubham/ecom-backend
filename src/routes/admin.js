@@ -332,6 +332,7 @@ router.post("/RemoveMobileBanners", midway.checkToken, (req, res, next) => {
 });
 
 router.get("/GetWebBanners", midway.checkToken, (req, res, next) => {
+    console.log(req.body.id)
     db.executeSql("select * from webbanners ", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -344,6 +345,15 @@ router.get("/GetWebBanners", midway.checkToken, (req, res, next) => {
 router.post("/RemoveWebBanners", midway.checkToken, (req, res, next) => {
     console.log(req.id)
     db.executeSql("Delete from webbanners where id=" + req.body.id, function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+router.get("/GetOrdersList", midway.checkToken, (req, res, next) => {
+    db.executeSql("select * from orders ", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {

@@ -325,7 +325,7 @@ router.get("/RemoveMainCategory/:id", (req, res, next) => {
     });
 });
 router.get("/GetWebBanner", (req, res, next) => {
-    db.executeSql("select * from webbanners ", function(data, err) {
+    db.executeSql("select * from webbanners where status=0", function(data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -484,6 +484,54 @@ router.get("/RemoveRecentUoloadImage", (req, res, next) => {
         }
     });
 })
+router.post("/SendEmailToUser", (req, res, next) => {
+    console.log(req.body);
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: false, // true for 465, false for other ports
+        auth: {
+            user: 'ptlshubham@gmail.com', // generated ethereal user
+            pass: 'spiderweb@1', // generated ethereal password
+        },
+    });
+    const output = `
+<p>You have new request</p>
+<h3>Contact Deails</h3>
+<ul>
+    <li>Name: ${req.body.name}</i>
+    <li>Email: ${req.body.email}</i>
+    <li>Contact Number: ${req.body.contact}</i>
+</ul>
+<h3>Message</h3>
+<p>${req.body.message}</p>
+<ul>
+    <li>Product ID:${req.body.pid}</li>
+    <li>Product Name:${req.body.p_name}</li>
+    <li>Product Dscripition:${req.body.p_desc}</li>
+    
+</ul>
+   `;
+    const mailOptions ={
+        from: '"KerYar" <ptlshubham@gmail.com>',
+        subject: "Product",
+        to: req.body.email,
+        Name: '${req.body.name}',
+        html: output
+
+    };
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log(error);
+            res.json("Errror");
+        } else {
+            console.log('Email sent: ' + info.response);
+            res.json("success");
+        }
+    });
+
+});
 
 function generateUUID() {
     var d = new Date().getTime();
