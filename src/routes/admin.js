@@ -354,7 +354,7 @@ router.post("/RemoveWebBanners", midway.checkToken, (req, res, next) => {
 });
 router.get("/GetOrdersList", midway.checkToken, (req, res, next) => {
     console.log('cghdtdfjyfut')
-    db.executeSql("select o.id,o.userid,o.productid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.productPrice,p.productMainImage from orders o join product p on o.productid=p.id", function (data, err) {
+    db.executeSql("select o.id,o.username,o.userid,o.productid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.productPrice,p.productMainImage from orders o join product p on o.productid=p.id", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {

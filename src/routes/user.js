@@ -101,7 +101,7 @@ router.post("/saveUserOrders", midway.checkToken, (req, res, next) => {
     if (req.body.productid.length == 1) {
         console.log("here");
         req.body.parentid = 0;
-        db.executeSql("INSERT INTO `orders`(`username`, `userid`, `addressid`, `productid`, `transactionid`, `parentid`, `modofpayment`, `orderdate`, `deliverydate`, `createddate`, `updateddate`)VALUES('" + req.body.username + "'," + req.body.userid + "," + req.body.addressid + "," + req.body.productid[0].id + ",null," + req.body.parentid + ",null,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);", function (data, err) {
+        db.executeSql("INSERT INTO `orders`(`username`, `userid`, `addressid`, `productid`, `transactionid`, `parentid`, `modofpayment`, `orderdate`, `deliverydate`, `createddate`, `updateddate`)VALUES('" + req.body.username + "'," + req.body.userid + "," + req.body.addressid + "," + req.body.productid[0].productid + ",null," + req.body.parentid + ",null,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
@@ -111,7 +111,7 @@ router.post("/saveUserOrders", midway.checkToken, (req, res, next) => {
     }
     else {
         req.body.parentid = 0;
-        db.executeSql("INSERT INTO `orders`(`username`, `userid`, `addressid`, `productid`, `transactionid`, `parentid`, `modofpayment`, `orderdate`, `deliverydate`, `createddate`, `updateddate`)VALUES('" + req.body.username + "'," + req.body.userid + "," + req.body.addressid + "," + req.body.productid[0].id + ",null," + req.body.parentid + ",null,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);", function (data, err) {
+        db.executeSql("INSERT INTO `orders`(`username`, `userid`, `addressid`, `productid`, `transactionid`, `parentid`, `modofpayment`, `orderdate`, `deliverydate`, `createddate`, `updateddate`)VALUES('" + req.body.username + "'," + req.body.userid + "," + req.body.addressid + "," + req.body.productid[0].productid + ",null," + req.body.parentid + ",null,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
@@ -121,7 +121,7 @@ router.post("/saveUserOrders", midway.checkToken, (req, res, next) => {
                     } else {
                         req.body.parentid = data1[0].id;
                         for (let i = 1; i < req.body.productid.length; i++) {
-                            db.executeSql("INSERT INTO `orders`(`username`, `userid`, `addressid`, `productid`, `transactionid`, `parentid`, `modofpayment`, `orderdate`, `deliverydate`, `createddate`, `updateddate`)VALUES('" + req.body.username + "'," + req.body.userid + "," + req.body.addressid + "," + req.body.productid[i].id + ",null," + req.body.parentid + ",null,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);", function (data, err) {
+                            db.executeSql("INSERT INTO `orders`(`username`, `userid`, `addressid`, `productid`, `transactionid`, `parentid`, `modofpayment`, `orderdate`, `deliverydate`, `createddate`, `updateddate`)VALUES('" + req.body.username + "'," + req.body.userid + "," + req.body.addressid + "," + req.body.productid[i].productid + ",null," + req.body.parentid + ",null,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);", function (data, err) {
                                 if (err) {
                                     console.log("Error in store.js", err);
                                 }
