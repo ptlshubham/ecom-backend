@@ -544,6 +544,7 @@ router.post("/SendEmailToUser", (req, res, next) => {
 
     };
     transporter.sendMail(mailOptions, function (error, info) {
+        console.log('fgfjfj')
         if (error) {
             console.log(error);
             res.json("Errror");
