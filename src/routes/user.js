@@ -207,7 +207,7 @@ router.get("/GetProductDetails/:id", (req, res, next) => {
 
 // router.get("/GetProductImages/:id", (req, res, next) => {
 //     console.log(req.body.userid)
-//     db.executeSql("select mi.id,mi.productid,p.id as ProductId,p.productMainImage from images mi join product p on where productid =" + req.params.id, function(data, err) {
+//     db.executeSql("select mi.id,mi.productid,p.id as ProductId,p.productMainImage from images mi join product p on where p.id =" + req.params.id, function(data, err) {
 //         if (err) {
 //             console.log("Error in store.js", err);
 //         } else {
@@ -395,13 +395,25 @@ router.get("/RemoveReviews/:id", (req, res, next) => {
 router.post("/GetNavbarRoutedProducts", (req, res, next) => {
     console.log("herde");
     console.log(req.body.id);
-    db.executeSql("select * from product where subCategory=" + req.body.id, function(data, err) {
-        if (err) {
-            console.log("Error in store.js", err);
-        } else {
-            return res.json(data);
-        }
-    });
+    if(req.body.subid != undefined){
+        db.executeSql("select * from product where subCategory=" + req.body.subid, function(data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+                return res.json(data);
+            }
+        });
+    }
+    else{
+        db.executeSql("select * from product where category=" + req.body.cateid, function(data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+                return res.json(data);
+            }
+        });
+    }
+  
 })
 
 router.post("/UploadProductImage", (req, res, next) => {
