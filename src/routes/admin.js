@@ -69,6 +69,16 @@ router.get("/GetROIList", midway.checkToken, (req, res, next) => {
     });
 });
 
+router.post("/GetOrdersList", midway.checkToken, (req, res, next) => {
+    db.executeSql("select o.id,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition,p.productMainImage from orders o join product p on o.productid=p.id where o.status='"+req.body.status+"';", function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
 router.post("/RemoveROIList", midway.checkToken, (req, res, next) => {
 
     console.log(req.body.id);
@@ -110,6 +120,17 @@ router.post("/UpdateMainCategory", midway.checkToken, (req, res, next) => {
 router.post("/UpdateCategory", midway.checkToken, (req, res, next) => {
     console.log(req.body);
     db.executeSql("UPDATE `ecommerce`.`category` SET parent=" + req.body.parent + ",name='" + req.body.name + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
+router.post("/AcceptUserOrders", midway.checkToken, (req, res, next) => {
+    console.log(req.body);
+    db.executeSql("UPDATE `ecommerce`.`orders` SET status= 'Accepted' WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -352,15 +373,7 @@ router.post("/RemoveWebBanners", midway.checkToken, (req, res, next) => {
         }
     });
 });
-router.get("/GetOrdersList", midway.checkToken, (req, res, next) => {
-    db.executeSql("select * from orders ", function (data, err) {
-        if (err) {
-            console.log("Error in store.js", err);
-        } else {
-            return res.json(data);
-        }
-    });
-});
+
 router.post("/UploadProductImage", midway.checkToken, (req, res, next) => {
     var imgname = generateUUID();
 
