@@ -215,9 +215,6 @@ router.get("/GetProductDetails/:id", (req, res, next) => {
     });
 });
 
-
-
-
 router.post("/SaveMainCategory", (req, res, next) => {
     console.log(req.body.name);
     db.executeSql("INSERT INTO `category`(`name`,`parent`,`createddate`,`updateddate`,`isactive`)VALUES('" + req.body.name + "'," + req.body.parent + ",CURRENT_TIMESTAMP,CURRENT_TIMESTAMP," + req.body.isactive + ");", function(data, err) {

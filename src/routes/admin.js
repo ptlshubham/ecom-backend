@@ -70,6 +70,7 @@ router.get("/GetROIList", midway.checkToken, (req, res, next) => {
 });
 
 router.post("/GetOrdersList", midway.checkToken, (req, res, next) => {
+    console.log('ygyguhguft')
     db.executeSql("select o.id,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition,p.productMainImage from orders o join product p on o.productid=p.id where o.status='"+req.body.status+"';", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
