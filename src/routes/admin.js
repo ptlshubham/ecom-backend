@@ -560,6 +560,65 @@ router.post("/saveEmioption", midway.checkToken, (req, res, next) => {
 
 });
 
+//filter apis
+router.post("/addToNewArrivals",midway.checkToken,(req,res,next)=>{
+    console.log(req.body);
+    for (let i = 0; i < req.body.length; i++) {
+        db.executeSql("update `ecommerce`.`product` SET isNewArrival=true,isBestProduct=false,isHot=false,isOnSale=false where id="+req.body[i].id, function (data, err) {
+            if (err) {
+                console.log(err);
+
+            } else {
+                
+            }
+        });
+    }
+    res.json("success");
+
+});
+
+router.post("/addToBestProduct",midway.checkToken,(req,res,next)=>{
+    for (let i = 0; i < req.body.length; i++) {
+        db.executeSql("update `ecommerce`.`product` SET isNewArrival=false,isBestProduct=true,isHot=false,isOnSale=false where id="+req.body[i].id, function (data, err) {
+            if (err) {
+                console.log(err);
+
+            } else {
+               
+            }
+        });
+    }
+    res.json("success");
+    
+});
+router.post("/addToHotProduct",midway.checkToken,(req,res,next)=>{
+    for (let i = 0; i < req.body.length; i++) {
+        db.executeSql("update `ecommerce`.`product` SET isNewArrival=false,isBestProduct=false,isHot=true,isOnSale=false where id="+req.body[i].id, function (data, err) {
+            if (err) {
+                console.log(err);
+
+            } else {
+               
+            }
+        });
+    }
+    res.json("success");
+    
+});
+router.post("/addToOnSale",midway.checkToken,(req,res,next)=>{
+    for (let i = 0; i < req.body.length; i++) {
+        db.executeSql("update `ecommerce`.`product` SET isNewArrival=false,isBestProduct=false,isHot=false,isOnSale=true where id="+req.body[i].id, function (data, err) {
+            if (err) {
+                console.log(err);
+
+            } else {
+               
+            }
+        });
+    }
+    res.json("success");
+    
+});
 
 
 function generateUUID() {
