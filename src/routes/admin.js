@@ -57,7 +57,7 @@ router.get("/GetBankList", (req, res, next) => {
             return res.json(data);
         }
     });
-});
+}); 
 
 router.get("/GetROIList", midway.checkToken, (req, res, next) => {
     db.executeSql("select e.id,e.bankid,e.months,e.intrest,b.id as BankId,b.bankname from emi e join banklist b on e.bankid=b.id", function (data, err) {
@@ -71,10 +71,10 @@ router.get("/GetROIList", midway.checkToken, (req, res, next) => {
 
 router.post("/GetOrdersList", midway.checkToken, (req, res, next) => {
     console.log('ygyguhguft')
-    db.executeSql("select o.id,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition,p.productMainImage from orders o join product p on o.productid=p.id where o.status='"+req.body.status+"';", function (data, err) {
+    db.executeSql("select o.id,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition,p.productMainImage, ad.address ,ad.city,ad.state,ad.pincode,ad.contactnumber from orders o inner join product p on o.productid=p.id inner join useraddress ad on ad.id = o.addressid where o.status='"+req.body.status+"';", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
-        } else {
+        } else {S
             return res.json(data);
         }
     });
