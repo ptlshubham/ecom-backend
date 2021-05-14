@@ -145,6 +145,7 @@ router.post("/saveUserOrders",midway.checkToken, (req, res, next) => {
 
 });
 router.get("/GetProductList", (req, res, next) => {
+    console.log("here");
     db.executeSql("select * from product ", function(data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -215,6 +216,16 @@ router.get("/GetProductDetails/:id", (req, res, next) => {
     });
 });
 
+router.get("/GetBestProduct", (req, res, next) => {
+    console.log('vkjlh')
+    db.executeSql("select * from product where isBestProduct=true", function(data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
 router.post("/SaveMainCategory", (req, res, next) => {
     console.log(req.body.name);
     db.executeSql("INSERT INTO `category`(`name`,`parent`,`createddate`,`updateddate`,`isactive`)VALUES('" + req.body.name + "'," + req.body.parent + ",CURRENT_TIMESTAMP,CURRENT_TIMESTAMP," + req.body.isactive + ");", function(data, err) {
