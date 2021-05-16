@@ -72,6 +72,17 @@ router.get("/GetUserAddress/:id", (req, res, next) => {
     });
 });
 
+router.post("/getOrdersForDashboard", (req, res, next) => {
+    console.log(req.body.id);
+    db.executeSql("select o.id,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id,p.productName,p.brandName,p.manufacturerName,p.productCode,p.startRating,p.productSRNumber,p.productPrice,p.discountPrice,p.emiOptions,p.avibilityStatus,p.descripition,p.relatedProduct,p.productSize,p.itemWeight,p.isActive,p.mainCategory,p.category,p.subCategory,p.productMainImage,p.createddate,p.updateddate,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale from orders o join product p on o.productid=p.id where o.userid="+ req.body.id, function(data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
 router.post("/saveAddToCart",midway.checkToken, (req, res, next) => {
 
     console.log(req.body);
@@ -162,7 +173,8 @@ router.post("/saveUserOrders",midway.checkToken, (req, res, next) => {
 
 });
 router.get("/GetProductList", (req, res, next) => {
-    db.executeSql("select * from product ", function(data, err) {
+    console.log("here");
+    db.executeSql("select p.id,p.productName,p.brandName,p.manufacturerName,p.productCode,p.startRating,p.productSRNumber,p.productPrice,p.discountPrice,p.emiOptions,p.avibilityStatus,p.descripition,p.relatedProduct,p.productSize,p.itemWeight,p.isActive,p.mainCategory,p.category,p.subCategory,p.productMainImage,p.createddate,p.updateddate,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,q.productid,q.quantity,q.size,q.soldquantity,q.stockdate from product p join quantitywithsize q on p.id=q.productid ", function(data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -224,6 +236,28 @@ router.get("/GetWishList",midway.checkToken, (req, res, next) => {
 });
 router.get("/GetProductDetails/:id", (req, res, next) => {
     db.executeSql("select * from product where id =" + req.params.id, function(data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
+router.get("/GetBestProduct", (req, res, next) => {
+    console.log('vkjlh')
+    db.executeSql("select * from product where isBestProduct=1", function(data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
+router.get("/GetNewArrivalProduct", (req, res, next) => {
+
+    db.executeSql("select * from product where isNewArrival=1", function(data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
