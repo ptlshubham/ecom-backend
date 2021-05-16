@@ -74,7 +74,7 @@ router.post("/GetOrdersList", midway.checkToken, (req, res, next) => {
     db.executeSql("select o.id,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition,p.productMainImage, ad.address ,ad.city,ad.state,ad.pincode,ad.contactnumber from orders o inner join product p on o.productid=p.id inner join useraddress ad on ad.id = o.addressid where o.status='"+req.body.status+"';", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
-        } else {S
+        } else {
             return res.json(data);
         }
     });
