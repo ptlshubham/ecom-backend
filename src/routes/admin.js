@@ -181,18 +181,19 @@ router.post("/SaveAddProducts", midway.checkToken, (req, res, next) => {
                                 console.log("Error in store.js", err);
                             } else {
                                 console.log(req.body.multi)
-                                for (let i = 0; i < req.body.multi.length; i++) {
-                                    db.executeSql("INSERT INTO `images`(`mainCategoryId`,`productid`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.mainCategory + "," + data1[0].id + "," + req.body.category + "," + req.body.subCategory + ",'/images/products/" + req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
-                                        if (err) {
-                                            console.log("Error in store.js", err);
-                                        } else { }
-                                    });
-                                }
+                               
                             }
                         });
 
 
                     })
+                    for (let i = 0; i < req.body.multi.length; i++) {
+                        db.executeSql("INSERT INTO `images`(`mainCategoryId`,`productid`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.mainCategory + "," + data1[0].id + "," + req.body.category + "," + req.body.subCategory + ",'"+ req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
+                            if (err) {
+                                console.log("Error in store.js", err);
+                            } else { }
+                        });
+                    } 
                 }
             });
         }

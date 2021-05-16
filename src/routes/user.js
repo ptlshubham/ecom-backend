@@ -194,8 +194,7 @@ router.get("/GetStateList", (req, res, next) => {
 });
 
 router.get("/GetCategoryList/:id", (req, res, next) => {
-    console.log("hello");
-    console.log(req.params.id);
+   
     db.executeSql("select * from category where isactive=1 AND parent =" + req.params.id, function(data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -205,7 +204,8 @@ router.get("/GetCategoryList/:id", (req, res, next) => {
     });
 });
 router.get("/GetProductImages/:id", (req, res, next) => {
-    console.log(req.body.userid)
+    console.log("images from here");
+    console.log(req.params.id)
     db.executeSql("select * from images where productid=" + req.params.id, function(data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -441,6 +441,18 @@ router.get("/RemoveReviews/:id", (req, res, next) => {
         }
     });
 })
+
+router.post("/GetProductSizeList", (req, res, next) => {
+
+  
+    db.executeSql("select * from quantitywithsize where productid=" + req.body.id, function(data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+})
 router.post("/GetNavbarRoutedProducts", (req, res, next) => {
     console.log("herde");
     if(req.body.subid != undefined){
@@ -517,7 +529,7 @@ router.post("/UploadMultiProductImage", (req, res, next) => {
     upload(req, res, function(err) {
         console.log("body=", req.body.catid);
         console.log("path=", config.url + '/images/products/' + req.file.filename);
-        db.executeSql("INSERT INTO `images`(`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.catid + "," + req.body.subcatid + "," + req.body.grandchild + ",'/images/products/" + req.file.filename + "',CURRENT_TIMESTAMP);", function(data, err) {
+        db.executeSql("INSERT INTO `images`(`mainCategoryId`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.catid + "," + req.body.subcatid + "," + req.body.grandchild + ",'/images/products/"  + req.file.filename + "',CURRENT_TIMESTAMP);", function(data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
