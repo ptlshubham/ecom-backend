@@ -116,7 +116,24 @@ router.post("/saveUserOrders",midway.checkToken, (req, res, next) => {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
-                return res.json(data);
+                db.executeSql("select soldquantity from `quantitywithsize` where productid="+req.body.productid[0].productid, function(data, err) {
+                    if (err) {
+                        console.log("Error in store.js", err);
+                    } else {
+                        if(data[0].soldquantity == null){
+                            data[0].soldquantity=0;
+                        }
+                       data[0].soldquantity=data[0].soldquantity +req.body.productid[0].quantity;
+                       db.executeSql("update `ecommerce`.`quantitywithsize` SET soldquantity="+data[0].soldquantity+" WHERE productid="+req.body.productid[0].productid, function(data, err) {
+                        if (err) {
+                            console.log("Error in store.js", err);
+                        } else {
+                            return res.json(data);
+                        }
+                    });
+                }
+                });
+                // return res.json(data);
             }
         });
     }
