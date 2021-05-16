@@ -139,20 +139,15 @@ router.post("/saveUserOrders",midway.checkToken, (req, res, next) => {
                                 } 
                                 else  
                                 {   
-                                    
                                 }
                             })
-
                         }
-                       
-    
                     }
                 });
                 return res.json(data);
             }
         });
     }
-   
 
 });
 router.get("/GetProductList", (req, res, next) => {
