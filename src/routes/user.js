@@ -112,19 +112,20 @@ router.post("/saveUserOrders",midway.checkToken, (req, res, next) => {
     if(req.body.productid.length ==1){
         console.log("here");
         req.body.parentid =0;
-        db.executeSql("INSERT INTO `orders`(`username`, `userid`, `addressid`, `productid`,`quantity`, `transactionid`, `parentid`, `modofpayment`,`status`,`orderdate`, `deliverydate`, `createddate`, `updateddate`)VALUES('" + req.body.username + "'," + req.body.userid + "," + req.body.addressid + "," + req.body.productid[0].productid +","+req.body.productid[0].quantity+",null," + req.body.parentid +",null,'"+req.body.status+"',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);", function(data, err) {
+        db.executeSql("INSERT INTO `orders`(`username`, `userid`, `addressid`, `productid`,`quantity`,`size`, `transactionid`, `parentid`, `modofpayment`,`status`,`orderdate`, `deliverydate`, `createddate`, `updateddate`)VALUES('" + req.body.username + "'," + req.body.userid + "," + req.body.addressid + "," + req.body.productid[0].productid +","+req.body.productid[0].quantity+",'"+req.body.size+"',null," + req.body.parentid +",null,'"+req.body.status+"',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);", function(data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
-                db.executeSql("select soldquantity from `quantitywithsize` where productid="+req.body.productid[0].productid, function(data, err) {
+                db.executeSql("select soldquantity from `quantitywithsize` where productid="+req.body.productid[0].productid+" and size ='"+req.body.productid[0].size+"'", function(data, err) {
                     if (err) {
                         console.log("Error in store.js", err);
                     } else {
                         if(data[0].soldquantity == null){
                             data[0].soldquantity=0;
                         }
-                       data[0].soldquantity=data[0].soldquantity +req.body.productid[0].quantity;
-                       db.executeSql("update `ecommerce`.`quantitywithsize` SET soldquantity="+data[0].soldquantity+" WHERE productid="+req.body.productid[0].productid, function(data, err) {
+                       data[0].soldquantity=data[0].soldquantity + req.body.productid[0].quantity;
+                       console.log("soldded=",req.body.productid[0].quantity);
+                       db.executeSql("update `ecommerce`.`quantitywithsize` SET soldquantity="+data[0].soldquantity+" WHERE productid="+req.body.productid[0].productid+" and size='"+req.body.productid[0].size+"'", function(data, err) {
                         if (err) {
                             console.log("Error in store.js", err);
                         } else {
@@ -143,6 +144,25 @@ router.post("/saveUserOrders",midway.checkToken, (req, res, next) => {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
+                db.executeSql("select soldquantity from `quantitywithsize` where productid="+req.body.productid[0].productid+" and size ='"+req.body.productid[0].size+"'", function(data, err) {
+                    if (err) {
+                        console.log("Error in store.js", err);
+                    } else {
+                        if(data[0].soldquantity == null){
+                            data[0].soldquantity=0;
+                        }
+                       data[0].soldquantity=data[0].soldquantity + req.body.productid[0].quantity;
+                       console.log("soldded=",req.body.productid[0].quantity);
+                       db.executeSql("update `ecommerce`.`quantitywithsize` SET soldquantity="+data[0].soldquantity+" WHERE productid="+req.body.productid[0].productid+" and size='"+req.body.productid[0].size+"'", function(data, err) {
+                        if (err) {
+                            console.log("Error in store.js", err);
+                        } else {
+                            // return res.json(data);
+                        }
+                    });
+                }
+                });
+                
                 db.executeSql("SELECT id FROM orders ORDER BY createddate DESC LIMIT 1", function(data1, err) {
                     if (err) {
                         console.log("Error in store.js", err);
@@ -156,6 +176,25 @@ router.post("/saveUserOrders",midway.checkToken, (req, res, next) => {
                                 } 
                                 else  
                                 {   
+                                    db.executeSql("select soldquantity from `quantitywithsize` where productid="+req.body.productid[i].productid+" and size ='"+req.body.productid[i].size+"'", function(data, err) {
+                                        if (err) {
+                                            console.log("Error in store.js", err);
+                                        } else {
+                                            if(data[0].soldquantity == null){
+                                                data[0].soldquantity=0;
+                                            }
+                                           data[0].soldquantity=data[0].soldquantity + req.body.productid[0].quantity;
+                                           console.log("soldded=",req.body.productid[0].quantity);
+                                           db.executeSql("update `ecommerce`.`quantitywithsize` SET soldquantity="+data[0].soldquantity+" WHERE productid="+req.body.productid[i].productid+" and size='"+req.body.productid[i].size+"'", function(data, err) {
+                                            if (err) {
+                                                console.log("Error in store.js", err);
+                                            } else {
+                                                return res.json(data);
+                                            }
+                                        });
+                                    }
+                                    });
+
                                 }
                             })
                         }
