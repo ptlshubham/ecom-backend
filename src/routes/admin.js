@@ -152,6 +152,27 @@ router.post("/ChangeOrdersStatus", midway.checkToken, (req, res, next) => {
         }
     });
 });
+router.get("/GetProductList", midway.checkToken,(req, res, next) => {
+    console.log("here");
+    db.executeSql("select p.id,p.productName,p.brandName,p.manufacturerName,p.productCode,p.startRating,p.productSRNumber,p.productPrice,p.discountPrice,p.emiOptions,p.avibilityStatus,p.descripition,p.relatedProduct,p.productSize,p.itemWeight,p.isActive,p.mainCategory,p.category,p.subCategory,p.productMainImage,p.createddate,p.updateddate,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale from product p ", function(data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+router.post("/GetProductSizeList", midway.checkToken, (req, res, next) => {
+  
+    console.log(req.body);
+    db.executeSql("select * from quantitywithsize where productid="+req.body.id, function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
 
 router.get("/RemoveMainCategory/:id", midway.checkToken, (req, res, next) => {
     db.executeSql("UPDATE `ecommerce`.`category` SET updateddate=CURRENT_TIMESTAMP,isactive=0 WHERE id=" + req.params.id + ";", function (data, err) {
