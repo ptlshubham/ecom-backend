@@ -83,6 +83,7 @@ router.post("/getOrdersForDashboard", (req, res, next) => {
     });
 });
 
+
 router.post("/saveAddToCart",midway.checkToken, (req, res, next) => {
 
     console.log(req.body);
@@ -217,6 +218,16 @@ router.get("/GetProductList", (req, res, next) => {
     });
 });
 
+router.post("/GetSimilarProductList", (req, res, next) => {
+    console.log(req.body.id);
+    db.executeSql("select * from product where category="+ req.body.id, function(data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
 router.get("/GetStateList", (req, res, next) => {
     db.executeSql("select * from state ", function(data, err) {
         if (err) {
