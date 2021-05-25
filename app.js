@@ -4,7 +4,8 @@ const bodyParser = require("body-parser");
 
 const cors = require("cors");
 var corsoption={
-    origin: "http://localhost:4200"
+    origin: "*",
+    // origin: "http://localhost:4300"
 }
 app.use(cors(corsoption));
 app.use(express.static('public'));

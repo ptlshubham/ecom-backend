@@ -209,7 +209,7 @@ router.post("/saveUserOrders",midway.checkToken, (req, res, next) => {
 });
 router.get("/GetProductList", (req, res, next) => {
     console.log("here");
-    db.executeSql("select p.id,p.productName,p.brandName,p.manufacturerName,p.productCode,p.startRating,p.productSRNumber,p.productPrice,p.discountPrice,p.emiOptions,p.avibilityStatus,p.descripition,p.relatedProduct,p.productSize,p.itemWeight,p.isActive,p.mainCategory,p.category,p.subCategory,p.productMainImage,p.createddate,p.updateddate,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale,q.productid,q.quantity,q.size,q.soldquantity,q.stockdate from product p join quantitywithsize q on p.id=q.productid ", function(data, err) {
+    db.executeSql("select * from product", function(data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
