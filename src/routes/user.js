@@ -500,17 +500,19 @@ router.post("/GetProductSizeList", (req, res, next) => {
 })
 router.post("/GetNavbarRoutedProducts", (req, res, next) => {
     console.log("herde");
+    console.log(req.body);
     if(req.body.subid != undefined){
         db.executeSql("select * from product where subCategory=" + req.body.subid, function(data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
+                console.log(data);
                 return res.json(data);
             }
         });
     }
     else{
-        db.executeSql("select * from product where category=" + req.body.catid, function(data, err) {
+        db.executeSql("select * from product where category="+req.body.catid, function(data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
