@@ -395,7 +395,7 @@ router.post("/getFilterProductList", midway.checkToken, (req, res, next) => {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-            console.log(data);
+          
             return res.json(data);
 
         }
