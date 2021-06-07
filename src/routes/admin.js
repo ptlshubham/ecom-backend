@@ -187,39 +187,51 @@ router.get("/RemoveMainCategory/:id", midway.checkToken, (req, res, next) => {
 
 router.post("/SaveAddProducts", midway.checkToken, (req, res, next) => {
     console.log(req.body)
-    db.executeSql("INSERT INTO `product`(`productName`,`brandName`,`manufacturerName`,`productCode`,`startRating`,`productSRNumber`,`productPrice`,`discountPrice`,`emiOptions`,`avibilityStatus`,`descripition`,`relatedProduct`,`productSize`,`itemWeight`,`isActive`,`mainCategory`,`category`,`subCategory`,`productMainImage`,`createddate`)VALUES('" + req.body.productName + "','" + req.body.brandName + "','" + req.body.manufacturerName + "'," + req.body.productCode + "," + req.body.startRating + ",'" + req.body.productSRNumber + "'," + req.body.productPrice + "," + req.body.discountPrice + "," + req.body.emiOptiions + "," + req.body.avibilityStatus + ",'" + req.body.descripition + "'," + req.body.relatedProduct + ",'" + req.body.productSize + "','" + req.body.itemWeight + "'," + req.body.isActive + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.productMainImage + "',CURRENT_TIMESTAMP);", function (data, err) {
-        if (err) {
-            console.log("Error in store.js", err);
-        } else {
-            db.executeSql("SELECT id FROM product ORDER BY createddate DESC LIMIT 1", function (data1, err) {
-                if (err) {
-                    console.log("Error in store.js", err);
-                } else {
-                    console.log("CCCFFFFGF", req.body.selectedSize);
-                    req.body.selectedSize.forEach(element => {
-                        db.executeSql("INSERT INTO `quantitywithsize`(`productid`,`quantity`,`size`,`soldquantity`,`stockdate`)VALUES(" + data1[0].id + ",'" + element.quantity + "','" + element.selsize + "','"+element.soldquantity+"',CURRENT_TIMESTAMP);", function (data, err) {
-                            if (err) {
-                                console.log("Error in store.js", err);
-                            } else {
-                                console.log(req.body.multi)
-                               
-                            }
-                        });
+    if(req.body.id == undefined || req.body.id == null){
+        db.executeSql("INSERT INTO `product`(`productName`,`brandName`,`manufacturerName`,`productCode`,`startRating`,`productSRNumber`,`productPrice`,`discountPrice`,`emiOptions`,`avibilityStatus`,`descripition`,`relatedProduct`,`productSize`,`itemWeight`,`isActive`,`mainCategory`,`category`,`subCategory`,`productMainImage`,`createddate`)VALUES('" + req.body.productName + "','" + req.body.brandName + "','" + req.body.manufacturerName + "'," + req.body.productCode + "," + req.body.startRating + ",'" + req.body.productSRNumber + "'," + req.body.productPrice + "," + req.body.discountPrice + "," + req.body.emiOptiions + "," + req.body.avibilityStatus + ",'" + req.body.descripition + "'," + req.body.relatedProduct + ",'" + req.body.productSize + "','" + req.body.itemWeight + "'," + req.body.isActive + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.productMainImage + "',CURRENT_TIMESTAMP);", function (data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+                db.executeSql("SELECT id FROM product ORDER BY createddate DESC LIMIT 1", function (data1, err) {
+                    if (err) {
+                        console.log("Error in store.js", err);
+                    } else {
+                        console.log("CCCFFFFGF", req.body.selectedSize);
+                        req.body.selectedSize.forEach(element => {
+                            db.executeSql("INSERT INTO `quantitywithsize`(`productid`,`quantity`,`size`,`soldquantity`,`stockdate`)VALUES(" + data1[0].id + ",'" + element.quantity + "','" + element.selsize + "','"+element.soldquantity+"',CURRENT_TIMESTAMP);", function (data, err) {
+                                if (err) {
+                                    console.log("Error in store.js", err);
+                                } else {
+                                    console.log(req.body.multi)
+                                   
+                                }
+                            });
+    
+    
+                        })
+                        for (let i = 0; i < req.body.multi.length; i++) {
+                            db.executeSql("INSERT INTO `images`(`mainCategoryId`,`productid`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.mainCategory + "," + data1[0].id + "," + req.body.category + "," + req.body.subCategory + ",'"+ req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
+                                if (err) {
+                                    console.log("Error in store.js", err);
+                                } else { }
+                            });
+                        } 
+                    }
+                });
+            }
+        })
+        res.json("success");
+    }
+    else{
+        db.executeSql("UPDATE `product` SET `productName`='"+req.body.productName+"',`brandName`='"+req.body.brandName+"',`manufacturerName`='"+req.body.manufacturerName+"',`productCode`="+req.body.productCode+",`startRating`="+req.body.startRating+",`productSRNumber`="+req.body.productSRNumber+",`productPrice`="+req.body.productPrice+",`discountPrice`="+req.body.discountPrice+",`emiOptions`="+req.body.emiOptiions+",`avibilityStatus`="+req.body.avibilityStatus+",`descripition`='"+req.body.descripition+"',`relatedProduct`='"+req.body.relatedProduct+"',`productSize`='"+req.body.productSize+"',`itemWeight`='"+req.body.itemWeight+"',`isActive`="+req.body.isActive+",`mainCategory`="+req.body.mainCategory+",`category`="+req.body.category+",`subCategory`="+req.body.subCategory+",`productMainImage`="+req.body.productMainImage+",`updateddate`=CURRENT_TIMESTAMP WHERE id="+req.body.id,function (data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+                return res.json(data);
+            }
+        });
+    }
 
-
-                    })
-                    for (let i = 0; i < req.body.multi.length; i++) {
-                        db.executeSql("INSERT INTO `images`(`mainCategoryId`,`productid`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.mainCategory + "," + data1[0].id + "," + req.body.category + "," + req.body.subCategory + ",'"+ req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
-                            if (err) {
-                                console.log("Error in store.js", err);
-                            } else { }
-                        });
-                    } 
-                }
-            });
-        }
-    })
-    res.json("success");
 });
 router.post("/UpdateReviews", midway.checkToken, (req, res, next) => {
     console.log(req.body)
@@ -323,7 +335,15 @@ router.post("/SaveAdminRegister", (req, res, next) => {
         }
     });
 });
-
+router.post("/getProductDetailImage",(req,res,next) =>{
+    db.executeSql("select * from images where productid=" + req.body.id, function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+})
 router.post("/SaveWebBanners", (req, res, next) => {
     console.log(req.body);
     db.executeSql("INSERT INTO `webbanners`(`name`,`bannersimage`,`status`)VALUES('" + req.body.name + "','" + req.body.bannersimage + "'," + req.body.status + ");", function (data, err) {
