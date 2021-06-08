@@ -98,7 +98,7 @@ router.get("/GetCustomerList", (req, res, next) => {
         } else {
             return res.json(data);
         }
-    });
+    }); 
 });
 router.get("/GetMainCategory/:id", (req, res, next) => {
     db.executeSql("select * from category where isactive=1 AND parent =" + req.params.id, function (data, err) {
@@ -506,7 +506,41 @@ router.get("/RemoveRecentUoloadImage", midway.checkToken, (req, res, next) => {
         }
     });
 })
+router.post("/UploadCategoryBannersImage", (req, res, next) => {
+    var imgname = generateUUID();
 
+    const storage = multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, 'images/categorybanners/');
+        },
+        // By default, multer removes file extensions so let's add them back
+        filename: function (req, file, cb) {
+
+            cb(null, imgname + path.extname(file.originalname));
+        }
+    });
+    let upload = multer({ storage: storage }).single('file');
+    upload(req, res, function (err) {
+        console.log("path=", config.url + 'images/categorybanners/' + req.file.filename);
+
+        if (req.fileValidationError) {
+            console.log("err1", req.fileValidationError);
+            return res.json("err1", req.fileValidationError);
+        } else if (!req.file) {
+            console.log('Please select an image to upload');
+            return res.json('Please select an image to upload');
+        } else if (err instanceof multer.MulterError) {
+            console.log("err3");
+            return res.json("err3", err);
+        } else if (err) {
+            console.log("err4");
+            return res.json("err4", err);
+        }
+        return res.json('/images/categorybanners/' + req.file.filename);
+
+        console.log("You have uploaded this image");
+    });
+});
 router.post("/UploadBannersImage", (req, res, next) => {
     var imgname = generateUUID();
 
