@@ -198,7 +198,7 @@ router.post("/SaveAddProducts", midway.checkToken, (req, res, next) => {
                     } else {
                         console.log("CCCFFFFGF", req.body.selectedSize);
                         req.body.selectedSize.forEach(element => {
-                            db.executeSql("INSERT INTO `quantitywithsize`(`productid`,`quantity`,`size`,`soldquantity`,`stockdate`)VALUES(" + data1[0].id + ",'" + element.quantity + "','" + element.selsize + "','"+element.soldquantity+"',CURRENT_TIMESTAMP);", function (data, err) {
+                            db.executeSql("INSERT INTO `quantitywithsize`(`productid`,`quantity`,`size`,`color`,`soldquantity`,`stockdate`)VALUES(" + data1[0].id + ",'" + element.quantity + "','" + element.selsize + "','"+element.color+"','"+element.soldquantity+"',CURRENT_TIMESTAMP);", function (data, err) {
                                 if (err) {
                                     console.log("Error in store.js", err);
                                 } else {
