@@ -7,15 +7,33 @@ const config = require("../../config");
 var midway = require('./midway');
 const jwt = require('jsonwebtoken');
 var crypto = require('crypto');
+const { equal } = require("assert");
 
 
 router.post("/SaveMainCategory", midway.checkToken, (req, res, next) => {
     console.log(req.body);
-    db.executeSql("INSERT INTO `category`(`name`,`parent`,`createddate`,`updateddate`,`isactive`)VALUES('" + req.body.name + "'," + req.body.parent + ",CURRENT_TIMESTAMP,CURRENT_TIMESTAMP," + req.body.isactive + ");", function (data, err) {
+    db.executeSql("INSERT INTO `category`(`name`,`parent`,`bannersimage`,`createddate`,`updateddate`,`isactive`)VALUES('" + req.body.name + "'," + req.body.parent + ",'" + req.body.bannersimage + "',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP," + req.body.isactive + ");", function (data, err) {
+        console.log(req.err)
         if (err) {
             res.json("error");
         } else {
-            res.json("success");
+            // res.json("success");
+            db.executeSql("SELECT id FROM category ORDER BY createddate DESC LIMIT 1", function (data1, err) {
+                if (err) {
+                    console.log("Error in store.js", err);
+                } else {
+                    db.executeSql("update `category` set bannersimage='"+req.body.bannersimage+"'  where id="+data1[0].id,function (data, err) {
+                        if (err) {
+                            console.log("Error in store.js", err);
+                        } else {
+                            console.log(data);
+                            return res.json("success");
+                        }
+                    });
+                }
+            });
+
+
         }
     });
 });
@@ -25,6 +43,7 @@ router.post("/SaveBankListCategory", midway.checkToken, (req, res, next) => {
         if (err) {
             res.json("error");
         } else {
+
             res.json("success");
         }
     });
@@ -57,11 +76,11 @@ router.get("/GetBankList", (req, res, next) => {
             return res.json(data);
         }
     });
-}); 
+});
 
 router.get("/GetROIList", midway.checkToken, (req, res, next) => {
     db.executeSql("select e.id,e.bankid,e.months,e.intrest,b.id as BankId,b.bankname from emi e join banklist b on e.bankid=b.id", function (data, err) {
-         if (err) {
+        if (err) {
             console.log("Error in store.js", err);
         } else {
             return res.json(data);
@@ -71,7 +90,7 @@ router.get("/GetROIList", midway.checkToken, (req, res, next) => {
 
 router.post("/GetOrdersList", midway.checkToken, (req, res, next) => {
     console.log('ygyguhguft')
-    db.executeSql("select o.id,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition,p.productMainImage, ad.address ,ad.city,ad.state,ad.pincode,ad.contactnumber from orders o inner join product p on o.productid=p.id inner join useraddress ad on ad.id = o.addressid where o.status='"+req.body.status+"';", function (data, err) {
+    db.executeSql("select o.id,o.username,o.userid,o.addressid,o.productid,o.quantity,o.transactionid,o.modofpayment,o.total,o.status,o.orderdate,o.deliverydate,p.id as ProductId,p.productName,p.brandName,p.manufacturerName,p.startRating,p.productPrice,p.discountPrice,p.avibilityStatus,p.descripition,p.productMainImage, ad.address ,ad.city,ad.state,ad.pincode,ad.contactnumber from orders o inner join product p on o.productid=p.id inner join useraddress ad on ad.id = o.addressid where o.status='" + req.body.status + "';", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -98,7 +117,7 @@ router.get("/GetCustomerList", (req, res, next) => {
         } else {
             return res.json(data);
         }
-    }); 
+    });
 });
 router.get("/GetMainCategory/:id", (req, res, next) => {
     db.executeSql("select * from category where isactive=1 AND parent =" + req.params.id, function (data, err) {
@@ -152,9 +171,9 @@ router.post("/ChangeOrdersStatus", midway.checkToken, (req, res, next) => {
         }
     });
 });
-router.get("/GetProductList", midway.checkToken,(req, res, next) => {
-    
-    db.executeSql("select p.id,p.productName,p.brandName,p.manufacturerName,p.productCode,p.startRating,p.productSRNumber,p.productPrice,p.discountPrice,p.emiOptions,p.avibilityStatus,p.descripition,p.relatedProduct,p.productSize,p.itemWeight,p.isActive,p.mainCategory,p.category,p.subCategory,p.productMainImage,p.createddate,p.updateddate,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale from product p ", function(data, err) {
+router.get("/GetProductList", midway.checkToken, (req, res, next) => {
+
+    db.executeSql("select p.id,p.productName,p.brandName,p.manufacturerName,p.productCode,p.startRating,p.productSRNumber,p.productPrice,p.discountPrice,p.emiOptions,p.avibilityStatus,p.descripition,p.relatedProduct,p.productSize,p.itemWeight,p.isActive,p.mainCategory,p.category,p.subCategory,p.productMainImage,p.createddate,p.updateddate,p.isNewArrival,p.isBestProduct,p.isHot,p.isOnSale from product p ", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -163,9 +182,9 @@ router.get("/GetProductList", midway.checkToken,(req, res, next) => {
     });
 });
 router.post("/GetProductSizeList", midway.checkToken, (req, res, next) => {
-  
+
     console.log(req.body);
-    db.executeSql("select * from quantitywithsize where productid="+req.body.id, function (data, err) {
+    db.executeSql("select * from quantitywithsize where productid=" + req.body.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -187,7 +206,7 @@ router.get("/RemoveMainCategory/:id", midway.checkToken, (req, res, next) => {
 
 router.post("/SaveAddProducts", midway.checkToken, (req, res, next) => {
     console.log(req.body)
-    if(req.body.id == undefined || req.body.id == null){
+    if (req.body.id == undefined || req.body.id == null) {
         db.executeSql("INSERT INTO `product`(`productName`,`brandName`,`manufacturerName`,`productCode`,`startRating`,`productSRNumber`,`productPrice`,`discountPrice`,`emiOptions`,`avibilityStatus`,`descripition`,`relatedProduct`,`productSize`,`itemWeight`,`isActive`,`mainCategory`,`category`,`subCategory`,`productMainImage`,`createddate`)VALUES('" + req.body.productName + "','" + req.body.brandName + "','" + req.body.manufacturerName + "'," + req.body.productCode + "," + req.body.startRating + ",'" + req.body.productSRNumber + "'," + req.body.productPrice + "," + req.body.discountPrice + "," + req.body.emiOptiions + "," + req.body.avibilityStatus + ",'" + req.body.descripition + "'," + req.body.relatedProduct + ",'" + req.body.productSize + "','" + req.body.itemWeight + "'," + req.body.isActive + "," + req.body.mainCategory + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.productMainImage + "',CURRENT_TIMESTAMP);", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
@@ -203,27 +222,27 @@ router.post("/SaveAddProducts", midway.checkToken, (req, res, next) => {
                                     console.log("Error in store.js", err);
                                 } else {
                                     console.log(req.body.multi)
-                                   
+
                                 }
                             });
-    
-    
+
+
                         })
                         for (let i = 0; i < req.body.multi.length; i++) {
-                            db.executeSql("INSERT INTO `images`(`mainCategoryId`,`productid`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.mainCategory + "," + data1[0].id + "," + req.body.category + "," + req.body.subCategory + ",'"+ req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
+                            db.executeSql("INSERT INTO `images`(`mainCategoryId`,`productid`,`categoryId`,`subCategoryId`,`productListImage`,`createddate`)VALUES(" + req.body.mainCategory + "," + data1[0].id + "," + req.body.category + "," + req.body.subCategory + ",'" + req.body.multi[i] + "',CURRENT_TIMESTAMP);", function (data, err) {
                                 if (err) {
                                     console.log("Error in store.js", err);
                                 } else { }
                             });
-                        } 
+                        }
                     }
                 });
             }
         })
         res.json("success");
     }
-    else{
-        db.executeSql("UPDATE `product` SET `productName`='"+req.body.productName+"',`brandName`='"+req.body.brandName+"',`manufacturerName`='"+req.body.manufacturerName+"',`productCode`="+req.body.productCode+",`startRating`="+req.body.startRating+",`productSRNumber`="+req.body.productSRNumber+",`productPrice`="+req.body.productPrice+",`discountPrice`="+req.body.discountPrice+",`emiOptions`="+req.body.emiOptiions+",`avibilityStatus`="+req.body.avibilityStatus+",`descripition`='"+req.body.descripition+"',`relatedProduct`='"+req.body.relatedProduct+"',`productSize`='"+req.body.productSize+"',`itemWeight`='"+req.body.itemWeight+"',`isActive`="+req.body.isActive+",`mainCategory`="+req.body.mainCategory+",`category`="+req.body.category+",`subCategory`="+req.body.subCategory+",`productMainImage`="+req.body.productMainImage+",`updateddate`=CURRENT_TIMESTAMP WHERE id="+req.body.id,function (data, err) {
+    else {
+        db.executeSql("UPDATE `product` SET `productName`='" + req.body.productName + "',`brandName`='" + req.body.brandName + "',`manufacturerName`='" + req.body.manufacturerName + "',`productCode`=" + req.body.productCode + ",`startRating`=" + req.body.startRating + ",`productSRNumber`=" + req.body.productSRNumber + ",`productPrice`=" + req.body.productPrice + ",`discountPrice`=" + req.body.discountPrice + ",`emiOptions`=" + req.body.emiOptiions + ",`avibilityStatus`=" + req.body.avibilityStatus + ",`descripition`='" + req.body.descripition + "',`relatedProduct`='" + req.body.relatedProduct + "',`productSize`='" + req.body.productSize + "',`itemWeight`='" + req.body.itemWeight + "',`isActive`=" + req.body.isActive + ",`mainCategory`=" + req.body.mainCategory + ",`category`=" + req.body.category + ",`subCategory`=" + req.body.subCategory + ",`productMainImage`=" + req.body.productMainImage + ",`updateddate`=CURRENT_TIMESTAMP WHERE id=" + req.body.id, function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
@@ -335,7 +354,7 @@ router.post("/SaveAdminRegister", (req, res, next) => {
         }
     });
 });
-router.post("/getProductDetailImage",(req,res,next) =>{
+router.post("/getProductDetailImage", (req, res, next) => {
     db.executeSql("select * from images where productid=" + req.body.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -411,11 +430,11 @@ router.post("/RemoveMobileBanners", midway.checkToken, (req, res, next) => {
 
 router.post("/getFilterProductList", midway.checkToken, (req, res, next) => {
     console.log(req.body);
-    db.executeSql("select * from product  where mainCategory="+req.body.maincatid+" OR category="+req.body.catid+" OR subCategory="+req.body.subid+";", function(data, err) {
+    db.executeSql("select * from product  where mainCategory=" + req.body.maincatid + " OR category=" + req.body.catid + " OR subCategory=" + req.body.subid + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-          
+
             return res.json(data);
 
         }
@@ -651,15 +670,15 @@ router.post("/saveEmioption", midway.checkToken, (req, res, next) => {
 });
 
 //filter apis
-router.post("/addToNewArrivals",midway.checkToken,(req,res,next)=>{
+router.post("/addToNewArrivals", midway.checkToken, (req, res, next) => {
     console.log(req.body);
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("update `ecommerce`.`product` SET isNewArrival=true,isBestProduct=false,isHot=false,isOnSale=false where id="+req.body[i].id, function (data, err) {
+        db.executeSql("update `ecommerce`.`product` SET isNewArrival=true,isBestProduct=false,isHot=false,isOnSale=false where id=" + req.body[i].id, function (data, err) {
             if (err) {
                 console.log(err);
 
             } else {
-                
+
             }
         });
     }
@@ -667,47 +686,47 @@ router.post("/addToNewArrivals",midway.checkToken,(req,res,next)=>{
 
 });
 
-router.post("/addToBestProduct",midway.checkToken,(req,res,next)=>{
+router.post("/addToBestProduct", midway.checkToken, (req, res, next) => {
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("update `ecommerce`.`product` SET isNewArrival=false,isBestProduct=true,isHot=false,isOnSale=false where id="+req.body[i].id, function (data, err) {
+        db.executeSql("update `ecommerce`.`product` SET isNewArrival=false,isBestProduct=true,isHot=false,isOnSale=false where id=" + req.body[i].id, function (data, err) {
             if (err) {
                 console.log(err);
 
             } else {
-               
+
             }
         });
     }
     res.json("success");
-    
+
 });
-router.post("/addToHotProduct",midway.checkToken,(req,res,next)=>{
+router.post("/addToHotProduct", midway.checkToken, (req, res, next) => {
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("update `ecommerce`.`product` SET isNewArrival=false,isBestProduct=false,isHot=true,isOnSale=false where id="+req.body[i].id, function (data, err) {
+        db.executeSql("update `ecommerce`.`product` SET isNewArrival=false,isBestProduct=false,isHot=true,isOnSale=false where id=" + req.body[i].id, function (data, err) {
             if (err) {
                 console.log(err);
 
             } else {
-               
+
             }
         });
     }
     res.json("success");
-    
+
 });
-router.post("/addToOnSale",midway.checkToken,(req,res,next)=>{
+router.post("/addToOnSale", midway.checkToken, (req, res, next) => {
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("update `ecommerce`.`product` SET isNewArrival=false,isBestProduct=false,isHot=false,isOnSale=true where id="+req.body[i].id, function (data, err) {
+        db.executeSql("update `ecommerce`.`product` SET isNewArrival=false,isBestProduct=false,isHot=false,isOnSale=true where id=" + req.body[i].id, function (data, err) {
             if (err) {
                 console.log(err);
 
             } else {
-               
+
             }
         });
     }
     res.json("success");
-    
+
 });
 
 
