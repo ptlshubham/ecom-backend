@@ -139,7 +139,7 @@ router.post("/UpdateMainCategory", midway.checkToken, (req, res, next) => {
 });
 router.post("/UpdateCategory", midway.checkToken, (req, res, next) => {
     console.log(req.body);
-    db.executeSql("UPDATE `ecommerce`.`category` SET parent=" + req.body.parent + ",name='" + req.body.name + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
+    db.executeSql("UPDATE `ecommerce`.`category` SET parent=" + req.body.parent + ",bannersimage='"+req.body.bannerimage+"',name='" + req.body.name + "',updateddate=CURRENT_TIMESTAMP WHERE id=" + req.body.id + ";", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
