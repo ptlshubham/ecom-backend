@@ -446,12 +446,52 @@ router.post("/getFilterProductList", midway.checkToken, (req, res, next) => {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-
             return res.json(data);
 
         }
     });
 });
+router.post("/GetAllFilterProduct", (req, res, next) => {
+    if(req.body.filter == 'hot'){
+        db.executeSql("select * from product where isHot=1", function(data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+                return res.json(data);
+            }
+        });
+    }
+    else if(req.body.filter == 'best'){
+        db.executeSql("select * from product where isBestProduct=1", function(data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+                return res.json(data);
+            }
+        });
+    }
+    else if(req.body.filter == 'sale'){
+        db.executeSql("select * from product where isOnSale=1", function(data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+                return res.json(data);
+            }
+        });
+    }
+    else{
+        db.executeSql("select * from product where isNewArrival=1", function(data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+                return res.json(data);
+            }
+        });
+    }
+    
+   
+});
+
 
 router.get("/GetWebBanners", midway.checkToken, (req, res, next) => {
     console.log(req.body.id)
