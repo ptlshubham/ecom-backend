@@ -148,6 +148,18 @@ router.post("/UpdateCategory", midway.checkToken, (req, res, next) => {
     });
 });
 
+router.post("/UpdateOrdersStatus", midway.checkToken, (req, res, next) => {
+    console.log('accept');
+    console.log(req.body);
+    db.executeSql("UPDATE `ecommerce`.`orders` SET status='"+req.body.status+"' WHERE id=" + req.body.id + ";", function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
 router.post("/AcceptUserOrders", midway.checkToken, (req, res, next) => {
     console.log('accept');
     console.log(req.body);
