@@ -290,7 +290,7 @@ router.get("/GetProductDetails/:id", (req, res, next) => {
 });
 
 router.get("/GetBestProduct", (req, res, next) => {
-    console.log('vkjlh')
+    
     db.executeSql("select * from product where isBestProduct=1", function(data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -476,7 +476,6 @@ router.post("/UpdateReviews", (req, res, next) => {
 
 
 router.get("/RemoveReviews/:id", (req, res, next) => {
-
     console.log(req.params.id);
     db.executeSql("Delete from ratings where id=" + req.params.id, function(data, err) {
         if (err) {
@@ -486,10 +485,19 @@ router.get("/RemoveReviews/:id", (req, res, next) => {
         }
     });
 })
-
+router.post("/getCatImage", (req, res, next) => {
+    console.log("hey");
+        db.executeSql("select * from category where id=" + req.body.id, function(data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+                return res.json(data);
+            }
+        });
+    
+    
+})
 router.post("/GetProductSizeList", (req, res, next) => {
-
-  
     db.executeSql("select * from quantitywithsize where productid=" + req.body.id, function(data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -506,7 +514,7 @@ router.post("/GetNavbarRoutedProducts", (req, res, next) => {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
-                console.log(data);
+                // console.log(data);
                 return res.json(data);
             }
         });
