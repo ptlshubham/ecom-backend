@@ -3,9 +3,9 @@ var mysql = require('mysql');
 
 var con = mysql.createConnection({
     host: "localhost",
-    user: "root",
-    password: "",
-    database:"ecommerce"
+    user: "masteradmin",
+    password: "ecommerce123",
+    database:"awsecommerce"
   });
   exports.executeSql = function ( sql, callback){
         con.query(sql, function (err, result) {
