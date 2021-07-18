@@ -2,7 +2,7 @@
 var mysql = require('mysql');
 
 var con = mysql.createConnection({
-    host: "localhost",
+    host: "awsecommercenew.cyuzel9ebm9t.us-east-2.rds.amazonaws.com",
     user: "masteradmin",
     password: "ecommerce123",
     database:"awsecommerce"
